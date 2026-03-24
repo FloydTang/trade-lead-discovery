@@ -72,6 +72,12 @@ python3 ./scripts/run_pre_release_gate.py
 - 最小 `for-openclaw/` 变体
 - 与 `线索整理skill/` 的桥接输出
 
+真实联网验证情况：
+
+- 当前脚本已验证到“联网搜索失败时不崩溃”
+- 在当前环境下，真实搜索结果仍受 DuckDuckGo / 搜索源可用性影响，可能返回空候选
+- 当前发布判断主要基于固定 fixtures、回归脚本和 gate，而不是实时搜索结果数量
+
 ## Chain Position
 
 推荐链路：

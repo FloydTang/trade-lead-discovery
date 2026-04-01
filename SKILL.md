@@ -9,13 +9,27 @@ description: Find the first batch of foreign-trade prospect companies from publi
 
 用这个 Skill 把“知道大概要找哪类客户，但不会系统搜客户”的问题，变成可复用的公开搜索流程。
 
-首版重点：
+角色定位：
 
-- 用通用网页搜索发现官网、目录页、展会页和 B2B 结果
-- 用 LinkedIn 结果线索补公司页与可见联系人线索
-- 输出结构化候选名单
-- 给出补查建议
-- 生成可直接进入 `线索整理skill/` 的标准输入
+- `客户搜索员`
+- 负责找出第一批候选客户线索
+- 不负责深度背调、客户价值判断或开发信生成
+
+## Chain Role
+
+- 在总链路中固定作为 `stage_worker`
+- 默认单节点策略：`attach_only`
+- 默认不独立声明飞书工作容器
+- 所有数据最终统一挂到 `Trade Lead Workflow Hub`
+
+## Agent-First Installation Notes
+
+这个仓库默认提供两层说明：
+
+- 公开层：根目录 `README.md`，保证最小可用
+- 增强层：`for-openclaw/README.md` 和 `references/00-单节点增强执行词.md`
+
+如果你要在龙虾里使用这个节点，优先复制增强执行词给龙虾，而不是先看教程型长文。
 
 ## Standard Input
 
@@ -58,8 +72,10 @@ description: Find the first batch of foreign-trade prospect companies from publi
 - 必须包含来源链接
 - 必须包含至少官网或 LinkedIn 线索字段
 - 必须包含 `follow_up_suggestion`
-- 必须包含可桥接到 `线索整理skill/` 的输出
+- 必须包含可桥接到 `trade-lead-screening` 的输出
 - 不能把搜索结果写成客户价值判断
+- 不能越权替代 `trade-lead-screening` 做标准化初筛
+- 不能越权替代 `trade-customer-intel` 做证据驱动背调
 
 ## Main Scripts
 
@@ -86,3 +102,10 @@ python3 ./scripts/run_regression_checks.py
 - 首版只用公开结果，不用登录态
 - 首版只做候选发现，不做深度背调
 - 首版输出优先衔接线索整理 Skill
+- OpenClaw 单节点默认只 attach，不单独建表
+
+## References
+
+- [00-单节点增强执行词.md](./references/00-单节点增强执行词.md)
+- [for-openclaw/README.md](./for-openclaw/README.md)
+- [for-openclaw/SKILL.md](./for-openclaw/SKILL.md)

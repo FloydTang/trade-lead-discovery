@@ -6,38 +6,64 @@ An open-source Codex skill for discovering the first batch of public-web prospec
 
 当前状态：可交付
 
-## 这个仓库适合谁
+角色定位：`客户搜索员`
 
-- 知道产品、市场和客户类型，但不会系统搜客户的人
-- 想快速做出一批公开候选名单的人
-- 想搭建 `客户搜索 -> 线索整理 -> 客户背调 -> 开发信` 链路的人
+链路角色：
 
-## What It Does
+- 在总链路里是 `stage_worker`
+- 组合包 / 主代理是 `workflow_owner`
+- 单节点默认 `attach_only`
+- `feishu_container_creation = forbidden`
+- 单节点不独立声明飞书工作容器
+- 所有数据最终统一挂到同一个 `Trade Lead Workflow Hub`
+
+上下游关系：
+
+- 上游：产品、市场、客户类型、关键词 brief
+- 下游：[trade-lead-screening](https://github.com/FloydTang/trade-lead-screening)
+
+## 公开最小可用说明
+
+这个仓库公开层只解决一个问题：
+
+- 给你一个能单独跑通的客户搜索最小版本
+- 和组合包一样，这个单节点仓库本身就拥有可独立执行的最小功能
+
+当前最小能力：
 
 - 生成固定搜索查询
 - 搜公开网页结果和 LinkedIn 公司结果线索
 - 去重并整理成结构化候选名单
 - 输出来源链接、可见联系人线索和补查建议
-- 桥接成 `线索整理skill/` 输入
+- 桥接成 `trade-lead-screening` 输入
 
-## Repository Structure
+## 飞书增强入口
 
-```text
-.
-├── README.md
-├── SKILL.md
-├── 立项方案.md
-├── 验收记录.md
-├── scripts/
-│   ├── build_lead_discovery_report.py
-│   ├── build_lead_screening_input.py
-│   ├── run_regression_checks.py
-│   └── run_pre_release_gate.py
-├── examples/
-├── references/
-├── schemas/
-└── for-openclaw/
-```
+如果你要把这个节点接进龙虾 / OpenClaw 多代理链路，优先不要先看长教程，直接复制增强执行词给龙虾：
+
+- [飞书增强入口：复制增强执行词给龙虾](https://evenbetter.feishu.cn/wiki/ADmiwiultihx6Yk1p2UcjfmVn6d)
+
+如果链接打开失败，请使用登记在半斤九两群里的飞书账号打开。
+
+如果你拿到的是半斤九两科技沟通过的执行包用户链接，也可以优先使用那个链接打开。
+
+如果你当前还没有半斤九两科技的账号，需要联系半斤九两科技，请访问：[evenbetter.tech](https://evenbetter.tech)
+
+仓库内对应的源码基线在：
+
+- `references/00-单节点增强执行词.md`
+- `for-openclaw/README.md`
+- `for-openclaw/SKILL.md`
+
+## 推荐模型
+
+- `coze/doubao-seed-2-0-mini-260215`
+
+## 这个仓库适合谁
+
+- 知道产品、市场和客户类型，但不会系统搜客户的人
+- 想快速做出一批公开候选名单的人
+- 想搭建 `客户搜索 -> 线索整理 -> 客户背调 -> 开发信` 链路的人
 
 ## Quick Start
 
@@ -88,7 +114,7 @@ python3 ./scripts/build_feishu_stage_payload.py \
 - 回归检查
 - pre-release gate
 - 最小 `for-openclaw/` 变体
-- 与 `线索整理skill/` 的桥接输出
+- 与 `trade-lead-screening` 的桥接输出
 
 真实联网验证情况：
 
@@ -100,7 +126,7 @@ python3 ./scripts/build_feishu_stage_payload.py \
 
 推荐链路：
 
-`客户搜索skill -> 线索整理skill -> 客户背调skill -> 开发信skill`
+`trade-lead-discovery -> trade-lead-screening -> trade-customer-intel -> trade-outreach-email`
 
 关联仓库：
 
@@ -108,12 +134,46 @@ python3 ./scripts/build_feishu_stage_payload.py \
 - 客户背调 Skill: [trade-customer-intel](https://github.com/FloydTang/trade-customer-intel)
 - 开发信 Skill: [trade-outreach-email](https://github.com/FloydTang/trade-outreach-email)
 
+## Agent-First 增强价值
+
+会员增强层当前不是改业务逻辑，而是补这几件事：
+
+- 单节点在龙虾里有明确的 `stage_worker` 角色
+- 单节点默认只 attach，不独立建飞书工作容器
+- 飞书里提供可直接复制给龙虾的增强执行词
+- 与总编排链路保持同一套回挂字段、失败回报和协作口径
+
+## Repository Structure
+
+```text
+.
+├── README.md
+├── SKILL.md
+├── 立项方案.md
+├── 验收记录.md
+├── scripts/
+│   ├── build_lead_discovery_report.py
+│   ├── build_lead_screening_input.py
+│   ├── run_regression_checks.py
+│   └── run_pre_release_gate.py
+├── examples/
+├── references/
+│   ├── 00-单节点增强执行词.md
+│   ├── input-fields.md
+│   ├── lead-screening-integration.md
+│   ├── output-template.md
+│   └── search-rules.md
+├── schemas/
+└── for-openclaw/
+```
+
 ## OpenClaw Variant
 
-`for-openclaw/` 提供最小 OpenClaw 包装版本：
+`for-openclaw/` 提供和总仓一致口径的单节点 OpenClaw 包装版本：
 
-- 假设搜索参数已由上游流程整理
-- 输出仍保持保守候选发现逻辑
+- 角色固定为 `stage_worker`
+- 默认只允许 attach 到 `Trade Lead Workflow Hub`
+- 不允许独立创建 Base、主表或平行工作容器
 
 ## 作者
 
